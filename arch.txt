@@ -1,6 +1,5 @@
 colors:
     æ brcyan
-    ø normal
 
 image:
 æ                   -`

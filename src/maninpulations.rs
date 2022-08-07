@@ -4,10 +4,49 @@ use regex::Regex;
 use std::{io, vec::Vec};
 use substring::Substring;
 
-pub fn center_image(image: &String, width: u32) -> String {
-    let image_rows = image.split("\n");
-    let color_escape_regex = Regex::new(r"(set_color)").unwrap();
-    image.to_string()
+pub fn decolorize_image(image: &String) -> String {
+    let no_color_escape_regex = Regex::new(r"(?m)(?:\A|m)((?:.|\n)*?)(?:\z|)").unwrap();
+    let mut cleaned_image = String::new();
+    for clean_part in no_color_escape_regex.captures_iter(&image) {
+        cleaned_image.push_str(&clean_part[1]);
+    }
+    cleaned_image
+}
+
+pub fn center_image(image: &String, width: usize) -> String {
+    #[derive(Debug)]
+    struct ImageRow {
+        image_row: String,
+        width: usize,
+    }
+    let color_escape_regex = Regex::new(r"(.*?m)").unwrap();
+    let image_rows = image.split("\n").map(|image_row| {
+        let mut width = image_row.chars().count();
+        for color_escape in color_escape_regex.captures_iter(&image_row) {
+            width -= &color_escape[0].chars().count();
+        }
+        ImageRow {
+            image_row: image_row.to_owned(),
+            width: width,
+        }
+    });
+
+    let image_width = image_rows.to_owned().max_by_key(|image_row| image_row.width).unwrap().width;
+    let mut centered_image = String::new();
+    for mut image_row in image_rows {
+        let spaces_before = (width - image_width) / 2;
+        for _ in 0..spaces_before {
+            image_row.image_row.insert(0, ' ');
+        }
+        let spaces_after = spaces_before + (image_width - image_row.width);
+        for _ in 0..spaces_after {
+            image_row.image_row.push(' ');
+        }
+        centered_image.push_str(image_row.image_row.as_str());
+        centered_image.push('\n');
+    };
+
+    centered_image
 }
 
 pub fn parse_colors(image: &String) -> io::Result<String> {
