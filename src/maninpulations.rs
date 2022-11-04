@@ -122,6 +122,8 @@ pub fn parse_colors(image: &String) -> io::Result<String> {
         image_section = String::from(image_section.substring(0, index));
         let string_colored = match color.color.as_str() {
             "brcyan" => string_to_color.bright_cyan(),
+            "brred" => string_to_color.bright_red(),
+            "brwhite" => string_to_color.bright_white(),
             _ => string_to_color.normal(),
         };
         image_section_colored.insert_str(0, format!("{}", string_colored).as_str());

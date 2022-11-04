@@ -1,0 +1,25 @@
+colors:
+    æ brred
+    ø brwhite
+
+image:
+æ            .-/+oossssoo+\-.
+        ´:+ssssssssssssssssss+:`
+      -+ssssssssssssssssssyyssss+-
+    .ossssssssssssssssssødMMMNyæsssso.
+   /sssssssssssøhdmmNNmmyNMMMMhæssssss\
+  +sssssssssøhmæydøMMMMMMMNddddyæssssssss+
+ /ssssssssøhNMMMæyhøhyyyyhmNMMMNhæssssssss\
+.ssssssssødMMMNhæssssssssssøhNMMMdæssssssss.
++ssssøhhhyNMMNyæssssssssssssøyNMMMyæsssssss+
+ossøyNMMMNyMMhæssssssssssssssøhmmmhæssssssso
+ossøyNMMMNyMMhæsssssssssssssshmmmhæssssssso
++ssssøhhhyNMMNyæssssssssssssøyNMMMyæsssssss+
+.ssssssssødMMMNhæssssssssssøhNMMMdæssssssss.
+ \ssssssssøhNMMMæyhøhyyyyhdNMMMNhæssssssss/
+  +sssssssssødmæydøMMMMMMMMddddyæssssssss+
+   \sssssssssssøhdmNNNNmyNMMMMhæssssss/
+    .ossssssssssssssssssødMMMNyæsssso.
+      -+sssssssssssssssssøyyyæssss+-
+        `:+ssssssssssssssssss+:`
+            .-\+oossssoo+/-.
