@@ -11,6 +11,10 @@ path = "src/main.rs"
 name = "center"
 path = "src/center.rs"
 
+[[bin]]
+name = "parse_ascii_art"
+path = "src/parse_ascii_art.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
