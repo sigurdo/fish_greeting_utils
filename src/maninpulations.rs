@@ -31,7 +31,11 @@ pub fn center_image(image: &String, width: usize) -> String {
         }
     });
 
-    let image_width = image_rows.to_owned().max_by_key(|image_row| image_row.width).unwrap().width;
+    let image_width = image_rows
+        .to_owned()
+        .max_by_key(|image_row| image_row.width)
+        .unwrap()
+        .width;
     let mut centered_image = String::new();
     for mut image_row in image_rows {
         let spaces_before = (width - image_width) / 2;
@@ -44,7 +48,7 @@ pub fn center_image(image: &String, width: usize) -> String {
         }
         centered_image.push_str(image_row.image_row.as_str());
         centered_image.push('\n');
-    };
+    }
 
     centered_image
 }

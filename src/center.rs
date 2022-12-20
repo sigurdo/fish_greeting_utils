@@ -1,6 +1,6 @@
 pub mod maninpulations;
-use std::{io::{stdin, Read}};
 use maninpulations::center_image;
+use std::io::{stdin, Read};
 use termion::terminal_size;
 
 pub fn main() {

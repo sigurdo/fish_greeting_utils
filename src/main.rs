@@ -3,9 +3,9 @@ pub mod maninpulations;
 
 use load::load_image;
 use maninpulations::{center_image, parse_colors};
-use termion::terminal_size;
-use std::env;
 use rand::seq::SliceRandom;
+use std::env;
+use termion::terminal_size;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
