@@ -15,6 +15,10 @@ path = "src/center.rs"
 name = "parse_ascii_art"
 path = "src/parse_ascii_art.rs"
 
+[[bin]]
+name = "colorize_path"
+path = "src/colorize_path.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
