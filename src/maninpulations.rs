@@ -36,6 +36,9 @@ pub fn center_image(image: &String, width: usize) -> String {
         .max_by_key(|image_row| image_row.width)
         .unwrap()
         .width;
+    if image_width > width {
+        return image.to_owned();
+    }
     let mut centered_image = String::new();
     for mut image_row in image_rows {
         let spaces_before = (width - image_width) / 2;
@@ -51,6 +54,16 @@ pub fn center_image(image: &String, width: usize) -> String {
     }
 
     centered_image
+}
+
+pub fn center_image_y(image: &String, height: usize) -> String {
+    let num_rows = image.split("\n").collect::<Vec<&str>>().len();
+    if num_rows < height {
+        let newlines: String = (0..((height - num_rows) / 2)).map(|_i| "\n").collect();
+        newlines.to_owned() + &image.to_owned() + &newlines
+    } else {
+        image.to_owned()
+    }
 }
 
 pub fn parse_colors(image: &String) -> io::Result<String> {
