@@ -1,7 +1,7 @@
 // Parse ASCII art from other sources, for custom usage, primarily neofetch distro logos.
 pub mod maninpulations;
 
-use maninpulations::center_image;
+use maninpulations::center_image_x;
 use regex::Captures;
 use regex::Regex;
 use std::ops::Index;
@@ -55,7 +55,7 @@ pub fn main() {
                 }
             })
             .into_owned();
-        let centered = center_image(&ascii_art, terminal_size().unwrap_or((80, 20)).0.into());
+        let centered = center_image_x(&ascii_art, terminal_size().unwrap_or((80, 20)).0.into());
         print!("[0m[37m{})\n", &os_name);
         print!("{}\n", &centered);
     }

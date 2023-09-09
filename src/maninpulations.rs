@@ -13,7 +13,7 @@ pub fn decolorize_image(image: &String) -> String {
     cleaned_image
 }
 
-pub fn center_image(image: &String, width: usize) -> String {
+pub fn center_image_x(image: &String, width: usize) -> String {
     #[derive(Debug)]
     struct ImageRow {
         image_row: String,

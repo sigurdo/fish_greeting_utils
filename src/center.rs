@@ -1,6 +1,6 @@
 pub mod maninpulations;
 use clap::{arg, Parser};
-use maninpulations::{center_image, center_image_y};
+use maninpulations::{center_image_x, center_image_y};
 use std::io::{stdin, Read};
 use termion::terminal_size;
 
@@ -8,10 +8,10 @@ use termion::terminal_size;
 #[command(author, version, about, long_about = None)]
 struct CenterArgs {
     #[arg(short, long)]
-    x_no_center: bool,
+    x_only: bool,
 
     #[arg(short, long)]
-    y_no_center: bool,
+    y_only: bool,
 }
 
 pub fn main() {
@@ -20,10 +20,10 @@ pub fn main() {
     let mut input = String::new();
     stdin().lock().read_to_string(&mut input).unwrap();
     let mut result = input;
-    if !args.x_no_center {
-        result = center_image(&result, columns as usize);
+    if !args.y_only {
+        result = center_image_x(&result, columns as usize);
     }
-    if !args.y_no_center {
+    if !args.x_only {
         result = center_image_y(&result, rows as usize);
     }
     print!("{}", result);

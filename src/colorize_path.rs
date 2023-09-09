@@ -1,6 +1,6 @@
 pub mod maninpulations;
 use colored::{ColoredString, Colorize};
-use maninpulations::center_image;
+use maninpulations::center_image_x;
 use std::io::{stdin, Read};
 use std::{str, u8};
 use termion::terminal_size;

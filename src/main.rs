@@ -2,7 +2,7 @@ pub mod load;
 pub mod maninpulations;
 
 use load::load_image;
-use maninpulations::{center_image, parse_colors};
+use maninpulations::{center_image_x, parse_colors};
 use rand::seq::SliceRandom;
 use std::env;
 use termion::terminal_size;
@@ -15,6 +15,6 @@ fn main() {
     let image = load_image(&String::from(image_name.as_str()), &image_directory).unwrap();
     let image = parse_colors(&image).unwrap();
     let columns = terminal_size().unwrap_or((80, 20)).0;
-    let image = center_image(&image, columns.into());
+    let image = center_image_x(&image, columns.into());
     print!("{}", &image);
 }
