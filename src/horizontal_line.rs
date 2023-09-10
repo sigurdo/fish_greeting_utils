@@ -3,8 +3,11 @@ use std::vec;
 use clap::{arg, Parser};
 use colored::Colorize;
 use hsv::hsv_to_rgb;
-use rand::{seq::SliceRandom, thread_rng, Rng};
+use rand::{seq::SliceRandom, Rng};
 // use rand::prelude::*;
+use rand::SeedableRng;
+// use rand_chacha::ChaChaRng8Core;
+use rand_chacha::ChaCha8Rng;
 use termion::terminal_size;
 
 #[derive(Parser, Debug)]
@@ -21,6 +24,9 @@ pub struct HorizontalLineArgs {
 
     #[arg(short, long, default_value = "-")]
     character: char,
+
+    #[arg(short, long)]
+    seed: Option<u64>,
 }
 
 pub fn colorize_string(string: String, rgb: (u8, u8, u8), zsh_prompt: bool) -> String {
@@ -37,6 +43,11 @@ pub fn horizontal_line(args: &HorizontalLineArgs) -> Result<String, String> {
     let width = args.width;
     let zsh_prompt_colors = args.zsh_prompt_colors;
     let character = args.character;
+    let mut rng = if args.seed.is_some() {
+        ChaCha8Rng::seed_from_u64(args.seed.unwrap())
+    } else {
+        ChaCha8Rng::from_entropy()
+    };
 
     let (columns, _rows) = if width.is_some() {
         (width.unwrap(), 0)
@@ -48,8 +59,8 @@ pub fn horizontal_line(args: &HorizontalLineArgs) -> Result<String, String> {
 
     let line = match theme.as_str() {
         "rainbow" => {
-            let hue_start = thread_rng().gen_range(0.0..360.0);
-            let hue_frequency = thread_rng().gen_range(1.0..2.0);
+            let hue_start = rng.gen_range(0.0..360.0);
+            let hue_frequency = rng.gen_range(1.0..2.0);
             let line = (0..columns)
                 .map(|i| {
                     let rgb = hsv_to_rgb(
@@ -70,7 +81,7 @@ pub fn horizontal_line(args: &HorizontalLineArgs) -> Result<String, String> {
         "taktlaus" => {
             let colors = {
                 let mut colors = vec![(255, 0, 0), (255, 255, 0), (0, 128, 0), (0, 75, 255)];
-                colors.shuffle(&mut thread_rng());
+                colors.shuffle(&mut rng);
                 colors
             };
             let mut num_undistributable_characters = columns % colors.len() as u16;

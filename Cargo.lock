@@ -160,6 +160,7 @@ dependencies = [
  "hsv",
  "itertools",
  "rand",
+ "rand_chacha",
  "regex",
  "substring",
  "termion",
