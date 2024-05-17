@@ -101,6 +101,23 @@ pub fn horizontal_line(args: &HorizontalLineArgs) -> Result<String, String> {
                 .collect();
             line
         }
+        "norge" => {
+            let red = (187, 4, 11);
+            let white = (255, 255, 255);
+            let blue = (0, 47, 167);
+            let sections = vec![(6, red), (1, white), (2, blue), (1, white), (12, red)];
+            let num_undistributable_characters = columns % sections.len() as u16;
+            let mut line: String = sections.iter().map(|section| {
+                let absolute_width = (section.0 * columns) / sections.iter().map(|section| { section.0 }).collect::<Vec<_>>().iter().sum::<u16>();
+                let text = (0..absolute_width).map(|_i| character).collect();
+                colorize_string(text, section.1, zsh_prompt_colors)
+            })
+            .collect();
+            if num_undistributable_characters > 0 {
+                line.extend(colorize_string((0..num_undistributable_characters).map(|_i| character).collect(), red, zsh_prompt_colors).chars());
+            }
+            line
+        }
         _ => {
             return Err(format!("theme {} not recognized", theme));
         }
