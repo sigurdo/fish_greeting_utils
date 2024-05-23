@@ -55,7 +55,54 @@ pub fn horizontal_line(args: &HorizontalLineArgs) -> Result<String, String> {
         terminal_size().unwrap()
     };
 
-    // let mut line = String::new();
+    enum DistributeRemainderStrategy {
+        PackLeft,
+        PackRight,
+        DistributeLeft,
+        DistributeRight,
+    }
+    fn line_from_colored_sections_extend_last(sections: &Vec<(u16, (u8, u8, u8))>, distribute_remainder: DistributeRemainderStrategy, columns: u16, character: char, zsh_prompt_colors: bool) -> String {
+        let mut num_undistributable_characters = columns % sections.len() as u16;
+        let sum_section_widths = sections.iter().map(|section| { section.0 }).collect::<Vec<_>>().iter().sum::<u16>();
+        match distribute_remainder {
+            DistributeRemainderStrategy::PackLeft | DistributeRemainderStrategy::DistributeLeft => {
+                let mut it = sections.iter();
+                let mut line = String::new();
+                while let Some((relative_width, color)) = it.next() {
+                    let absolute_width = (relative_width * columns) / sum_section_widths
+                        + if num_undistributable_characters > 0 {
+                            let result = match distribute_remainder {
+                                DistributeRemainderStrategy::PackLeft => num_undistributable_characters,
+                                _ => 1,
+                            };
+                            num_undistributable_characters -= result;
+                            result
+                        } else { 0 };
+                    let text = (0..absolute_width).map(|_i| character).collect();
+                    line = line + colorize_string(text, *color, zsh_prompt_colors).as_str()
+                }
+                line
+            },
+            DistributeRemainderStrategy::PackRight | DistributeRemainderStrategy::DistributeRight => {
+                let mut it = sections.iter().rev();
+                let mut line = String::new();
+                while let Some((relative_width, color)) = it.next() {
+                    let absolute_width = (relative_width * columns) / sum_section_widths
+                        + if num_undistributable_characters > 0 {
+                            let result = match distribute_remainder {
+                                DistributeRemainderStrategy::PackRight => num_undistributable_characters,
+                                _ => 1,
+                            };
+                            num_undistributable_characters -= result;
+                            result
+                        } else { 0 };
+                    let text = (0..absolute_width).map(|_i| character).collect();
+                    line = colorize_string(text, *color, zsh_prompt_colors) + line.as_str()
+                }
+                line
+            }
+        }
+    }
 
     let line = match theme.as_str() {
         "rainbow" => {
@@ -79,44 +126,20 @@ pub fn horizontal_line(args: &HorizontalLineArgs) -> Result<String, String> {
             line
         }
         "taktlaus" => {
-            let colors = {
-                let mut colors = vec![(255, 0, 0), (255, 255, 0), (0, 128, 0), (0, 75, 255)];
-                colors.shuffle(&mut rng);
-                colors
-            };
-            let mut num_undistributable_characters = columns % colors.len() as u16;
-            let line = colors
-                .iter()
-                .map(|rgb| {
-                    let text_length = columns / colors.len() as u16
-                        + if num_undistributable_characters > 0 {
-                            num_undistributable_characters -= 1;
-                            1
-                        } else {
-                            0
-                        };
-                    let text = (0..text_length).map(|_i| character).collect();
-                    colorize_string(text, *rgb, zsh_prompt_colors)
-                })
-                .collect();
-            line
+            let sections = vec![
+                (1, (255, 0, 0)),
+                (1, (255, 255, 0)),
+                (1, (0, 128, 0)),
+                (1, (0, 75, 255)),
+            ];
+            line_from_colored_sections_extend_last(&sections, DistributeRemainderStrategy::DistributeLeft, columns, character, zsh_prompt_colors)
         }
         "norge" => {
             let red = (187, 4, 11);
             let white = (255, 255, 255);
             let blue = (0, 47, 167);
             let sections = vec![(6, red), (1, white), (2, blue), (1, white), (12, red)];
-            let num_undistributable_characters = columns % sections.len() as u16;
-            let mut line: String = sections.iter().map(|section| {
-                let absolute_width = (section.0 * columns) / sections.iter().map(|section| { section.0 }).collect::<Vec<_>>().iter().sum::<u16>();
-                let text = (0..absolute_width).map(|_i| character).collect();
-                colorize_string(text, section.1, zsh_prompt_colors)
-            })
-            .collect();
-            if num_undistributable_characters > 0 {
-                line.extend(colorize_string((0..num_undistributable_characters).map(|_i| character).collect(), red, zsh_prompt_colors).chars());
-            }
-            line
+            line_from_colored_sections_extend_last(&sections, DistributeRemainderStrategy::PackRight, columns, character, zsh_prompt_colors)
         }
         _ => {
             return Err(format!("theme {} not recognized", theme));
